@@ -1,0 +1,422 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 44;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
+		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
+		FC06C1650E6E4BD2009B604D /* RubyConDefaultsDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = FC06C1640E6E4BD2009B604D /* RubyConDefaultsDomain.m */; };
+		FC06C1680E6E4E06009B604D /* RubyConDefaultsKey.m in Sources */ = {isa = PBXBuildFile; fileRef = FC06C1670E6E4E06009B604D /* RubyConDefaultsKey.m */; };
+		FC0A37CD0E23229B004BBFA5 /* console.rb in Resources */ = {isa = PBXBuildFile; fileRef = FC0A37CC0E23229B004BBFA5 /* console.rb */; };
+		FC2C33260E62507600E1F5E7 /* RubyCocoa.framework in Copy In Custom RubyCocoa */ = {isa = PBXBuildFile; fileRef = FC2C330E0E62502300E1F5E7 /* RubyCocoa.framework */; };
+		FC2C33390E62538C00E1F5E7 /* RubyCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC2C33380E62538C00E1F5E7 /* RubyCocoa.framework */; };
+		FC6634B90E4BC33C0092C2EF /* RubyConUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FC6634B80E4BC33C0092C2EF /* RubyConUtilities.m */; };
+		FC6635050E4BCBFE0092C2EF /* rubyconrc.rb in Resources */ = {isa = PBXBuildFile; fileRef = FC6635040E4BCBFE0092C2EF /* rubyconrc.rb */; };
+		FC6636770E4CC21C0092C2EF /* NSWindow+WindowList.m in Sources */ = {isa = PBXBuildFile; fileRef = FC6636760E4CC21C0092C2EF /* NSWindow+WindowList.m */; };
+		FC6636DF0E50B11D0092C2EF /* fscript_menu_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = FC6636DE0E50B11D0092C2EF /* fscript_menu_icon.icns */; };
+		FC6B8BDC0E55F4F50023A2B8 /* focus_window_controller.rb in Resources */ = {isa = PBXBuildFile; fileRef = FC6B8BDB0E55F4F50023A2B8 /* focus_window_controller.rb */; };
+		FC6B8ED90E567CF90023A2B8 /* RubyConFocusView.m in Sources */ = {isa = PBXBuildFile; fileRef = FC6B8ED80E567CF90023A2B8 /* RubyConFocusView.m */; };
+		FC8EFE3F0E576E200070E838 /* view_description.rb in Resources */ = {isa = PBXBuildFile; fileRef = FC8EFE3E0E576E200070E838 /* view_description.rb */; };
+		FCC94FB30E55E1380058B891 /* info_window_controller.rb in Resources */ = {isa = PBXBuildFile; fileRef = FCC94FB20E55E1380058B891 /* info_window_controller.rb */; };
+		FCC94FBC0E55E17C0058B891 /* view_naming.rb in Resources */ = {isa = PBXBuildFile; fileRef = FCC94FBB0E55E17C0058B891 /* view_naming.rb */; };
+		FCC94FBE0E55E1BD0058B891 /* fscript.rb in Resources */ = {isa = PBXBuildFile; fileRef = FCC94FBD0E55E1BD0058B891 /* fscript.rb */; };
+		FCC950080E55EF190058B891 /* label_window_controller.rb in Resources */ = {isa = PBXBuildFile; fileRef = FCC950070E55EF190058B891 /* label_window_controller.rb */; };
+		FCE0318C0E2291BB008392E6 /* RubyConLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = FCE0318B0E2291BB008392E6 /* RubyConLoader.m */; };
+		FCE031E00E229741008392E6 /* Info in Build Input Manager */ = {isa = PBXBuildFile; fileRef = FCE031DE0E229734008392E6 /* Info */; };
+		FCED45AB0E317F7900354E55 /* rubycon_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = FCED45AA0E317F7900354E55 /* rubycon_icon.icns */; };
+		FCFFFB060E6C9D44005F841F /* RubyConDefaultsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFFFB040E6C9D44005F841F /* RubyConDefaultsController.m */; };
+		FCFFFB730E6CCCD4005F841F /* DefaultsEditor.nib in Resources */ = {isa = PBXBuildFile; fileRef = FCFFFB720E6CCCD4005F841F /* DefaultsEditor.nib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FC2C33250E62506F00E1F5E7 /* Copy In Custom RubyCocoa */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				FC2C33260E62507600E1F5E7 /* RubyCocoa.framework in Copy In Custom RubyCocoa */,
+			);
+			name = "Copy In Custom RubyCocoa";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FCE031CD0E2296D2008392E6 /* Build Input Manager */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				FCE031E00E229741008392E6 /* Info in Build Input Manager */,
+			);
+			name = "Build Input Manager";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		089C1672FE841209C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		32DBCF630370AF2F00C91783 /* RubyCon_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyCon_Prefix.pch; sourceTree = "<group>"; };
+		8D5B49B6048680CD000E48DA /* RubyCon.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RubyCon.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		FC06C1630E6E4BD2009B604D /* RubyConDefaultsDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyConDefaultsDomain.h; sourceTree = "<group>"; };
+		FC06C1640E6E4BD2009B604D /* RubyConDefaultsDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RubyConDefaultsDomain.m; sourceTree = "<group>"; };
+		FC06C1660E6E4E06009B604D /* RubyConDefaultsKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyConDefaultsKey.h; sourceTree = "<group>"; };
+		FC06C1670E6E4E06009B604D /* RubyConDefaultsKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RubyConDefaultsKey.m; sourceTree = "<group>"; };
+		FC0A37CC0E23229B004BBFA5 /* console.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = console.rb; sourceTree = "<group>"; };
+		FC2C330E0E62502300E1F5E7 /* RubyCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RubyCocoa.framework; sourceTree = "<group>"; };
+		FC2C33380E62538C00E1F5E7 /* RubyCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RubyCocoa.framework; path = /Library/Frameworks/RubyCocoa.framework; sourceTree = "<absolute>"; };
+		FC6634B70E4BC33C0092C2EF /* RubyConUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyConUtilities.h; sourceTree = "<group>"; };
+		FC6634B80E4BC33C0092C2EF /* RubyConUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RubyConUtilities.m; sourceTree = "<group>"; };
+		FC6635040E4BCBFE0092C2EF /* rubyconrc.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = rubyconrc.rb; sourceTree = "<group>"; };
+		FC6636750E4CC21C0092C2EF /* NSWindow+WindowList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSWindow+WindowList.h"; sourceTree = "<group>"; };
+		FC6636760E4CC21C0092C2EF /* NSWindow+WindowList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+WindowList.m"; sourceTree = "<group>"; };
+		FC6636DE0E50B11D0092C2EF /* fscript_menu_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = fscript_menu_icon.icns; sourceTree = "<group>"; };
+		FC6B8BDB0E55F4F50023A2B8 /* focus_window_controller.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = focus_window_controller.rb; sourceTree = "<group>"; };
+		FC6B8ED70E567CF90023A2B8 /* RubyConFocusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyConFocusView.h; sourceTree = "<group>"; };
+		FC6B8ED80E567CF90023A2B8 /* RubyConFocusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RubyConFocusView.m; sourceTree = "<group>"; };
+		FC8EFE3E0E576E200070E838 /* view_description.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = view_description.rb; sourceTree = "<group>"; };
+		FCC94FB20E55E1380058B891 /* info_window_controller.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = info_window_controller.rb; sourceTree = "<group>"; };
+		FCC94FBB0E55E17C0058B891 /* view_naming.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = view_naming.rb; sourceTree = "<group>"; };
+		FCC94FBD0E55E1BD0058B891 /* fscript.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = fscript.rb; sourceTree = "<group>"; };
+		FCC950070E55EF190058B891 /* label_window_controller.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = label_window_controller.rb; sourceTree = "<group>"; };
+		FCE0318A0E2291BB008392E6 /* RubyConLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyConLoader.h; sourceTree = "<group>"; };
+		FCE0318B0E2291BB008392E6 /* RubyConLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RubyConLoader.m; sourceTree = "<group>"; };
+		FCE031DE0E229734008392E6 /* Info */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info; sourceTree = "<group>"; };
+		FCED45AA0E317F7900354E55 /* rubycon_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = rubycon_icon.icns; sourceTree = "<group>"; };
+		FCFFFB040E6C9D44005F841F /* RubyConDefaultsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RubyConDefaultsController.m; sourceTree = "<group>"; };
+		FCFFFB050E6C9D44005F841F /* RubyConDefaultsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyConDefaultsController.h; sourceTree = "<group>"; };
+		FCFFFB720E6CCCD4005F841F /* DefaultsEditor.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = DefaultsEditor.nib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D5B49B3048680CD000E48DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
+				FC2C33390E62538C00E1F5E7 /* RubyCocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		089C166AFE841209C02AAC07 /* RubyCon */ = {
+			isa = PBXGroup;
+			children = (
+				FC2C33380E62538C00E1F5E7 /* RubyCocoa.framework */,
+				08FB77AFFE84173DC02AAC07 /* Classes */,
+				32C88E010371C26100C91783 /* Other Sources */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
+				19C28FB8FE9D52D311CA2CBB /* Products */,
+			);
+			name = RubyCon;
+			sourceTree = "<group>";
+		};
+		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */,
+				1058C7AEFEA557BF11CA2CBB /* Other Frameworks */,
+			);
+			name = "Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FCFFFB720E6CCCD4005F841F /* DefaultsEditor.nib */,
+				FC6636DE0E50B11D0092C2EF /* fscript_menu_icon.icns */,
+				FCED45AA0E317F7900354E55 /* rubycon_icon.icns */,
+				FC0A37CC0E23229B004BBFA5 /* console.rb */,
+				FC8EFE3E0E576E200070E838 /* view_description.rb */,
+				FCC94FB20E55E1380058B891 /* info_window_controller.rb */,
+				FCC950070E55EF190058B891 /* label_window_controller.rb */,
+				FCC94FBB0E55E17C0058B891 /* view_naming.rb */,
+				FC6B8BDB0E55F4F50023A2B8 /* focus_window_controller.rb */,
+				FCC94FBD0E55E1BD0058B891 /* fscript.rb */,
+				FC6635040E4BCBFE0092C2EF /* rubyconrc.rb */,
+				FCE031DE0E229734008392E6 /* Info */,
+				8D5B49B7048680CD000E48DA /* Info.plist */,
+				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AFFE84173DC02AAC07 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				FC6634B70E4BC33C0092C2EF /* RubyConUtilities.h */,
+				FC6634B80E4BC33C0092C2EF /* RubyConUtilities.m */,
+				FCE0318A0E2291BB008392E6 /* RubyConLoader.h */,
+				FCE0318B0E2291BB008392E6 /* RubyConLoader.m */,
+				FC6636750E4CC21C0092C2EF /* NSWindow+WindowList.h */,
+				FC6636760E4CC21C0092C2EF /* NSWindow+WindowList.m */,
+				FC6B8ED70E567CF90023A2B8 /* RubyConFocusView.h */,
+				FC6B8ED80E567CF90023A2B8 /* RubyConFocusView.m */,
+				FC06C1630E6E4BD2009B604D /* RubyConDefaultsDomain.h */,
+				FC06C1640E6E4BD2009B604D /* RubyConDefaultsDomain.m */,
+				FC06C1660E6E4E06009B604D /* RubyConDefaultsKey.h */,
+				FC06C1670E6E4E06009B604D /* RubyConDefaultsKey.m */,
+				FCFFFB050E6C9D44005F841F /* RubyConDefaultsController.h */,
+				FCFFFB040E6C9D44005F841F /* RubyConDefaultsController.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FC2C330E0E62502300E1F5E7 /* RubyCocoa.framework */,
+				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7AEFEA557BF11CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				089C167FFE841241C02AAC07 /* AppKit.framework */,
+				D2F7E65807B2D6F200F64583 /* CoreData.framework */,
+				089C1672FE841209C02AAC07 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FB8FE9D52D311CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D5B49B6048680CD000E48DA /* RubyCon.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		32C88E010371C26100C91783 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				32DBCF630370AF2F00C91783 /* RubyCon_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D5B49AC048680CD000E48DA /* RubyCon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "RubyCon" */;
+			buildPhases = (
+				8D5B49AF048680CD000E48DA /* Resources */,
+				8D5B49B1048680CD000E48DA /* Sources */,
+				8D5B49B3048680CD000E48DA /* Frameworks */,
+				FCE031CD0E2296D2008392E6 /* Build Input Manager */,
+				FC2C33250E62506F00E1F5E7 /* Copy In Custom RubyCocoa */,
+				FC2C332D0E6251FA00E1F5E7 /* Make Latest Link */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RubyCon;
+			productInstallPath = "$(HOME)/Library/Bundles";
+			productName = RubyCon;
+			productReference = 8D5B49B6048680CD000E48DA /* RubyCon.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "RubyCon" */;
+			compatibilityVersion = "Xcode 3.0";
+			hasScannedForEncodings = 1;
+			mainGroup = 089C166AFE841209C02AAC07 /* RubyCon */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8D5B49AC048680CD000E48DA /* RubyCon */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D5B49AF048680CD000E48DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */,
+				FC0A37CD0E23229B004BBFA5 /* console.rb in Resources */,
+				FCED45AB0E317F7900354E55 /* rubycon_icon.icns in Resources */,
+				FC6635050E4BCBFE0092C2EF /* rubyconrc.rb in Resources */,
+				FC6636DF0E50B11D0092C2EF /* fscript_menu_icon.icns in Resources */,
+				FCC94FB30E55E1380058B891 /* info_window_controller.rb in Resources */,
+				FCC94FBC0E55E17C0058B891 /* view_naming.rb in Resources */,
+				FCC94FBE0E55E1BD0058B891 /* fscript.rb in Resources */,
+				FCC950080E55EF190058B891 /* label_window_controller.rb in Resources */,
+				FC6B8BDC0E55F4F50023A2B8 /* focus_window_controller.rb in Resources */,
+				FC8EFE3F0E576E200070E838 /* view_description.rb in Resources */,
+				FCFFFB730E6CCCD4005F841F /* DefaultsEditor.nib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		FC2C332D0E6251FA00E1F5E7 /* Make Latest Link */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Make Latest Link";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "rm -f $BUILD_DIR/Latest\nln -s $BUILD_DIR/$BUILD_STYLE $BUILD_DIR/Latest";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D5B49B1048680CD000E48DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FCE0318C0E2291BB008392E6 /* RubyConLoader.m in Sources */,
+				FC6634B90E4BC33C0092C2EF /* RubyConUtilities.m in Sources */,
+				FC6636770E4CC21C0092C2EF /* NSWindow+WindowList.m in Sources */,
+				FC6B8ED90E567CF90023A2B8 /* RubyConFocusView.m in Sources */,
+				FCFFFB060E6C9D44005F841F /* RubyConDefaultsController.m in Sources */,
+				FC06C1650E6E4BD2009B604D /* RubyConDefaultsDomain.m in Sources */,
+				FC06C1680E6E4E06009B604D /* RubyConDefaultsKey.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C167DFE841241C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C167EFE841241C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB913B08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)/RubyCon";
+				COPY_PHASE_STRIP = NO;
+				DEPLOYMENT_LOCATION = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = RubyCon_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = /Library/InputManagers;
+				PRODUCT_NAME = RubyCon;
+				WRAPPER_EXTENSION = bundle;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB913C08733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)/RubyCon";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEPLOYMENT_LOCATION = NO;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DSTROOT = /;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = RubyCon_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_GROUP = wheel;
+				INSTALL_MODE_FLAG = "a-w,a+rX";
+				INSTALL_OWNER = root;
+				INSTALL_PATH = /Library/InputManagers;
+				PRODUCT_NAME = RubyCon;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		1DEB913F08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Debug;
+		};
+		1DEB914008733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					i386,
+					ppc,
+					ppc64,
+					x86_64,
+				);
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "RubyCon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913B08733D840010E9CD /* Debug */,
+				1DEB913C08733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "RubyCon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913F08733D840010E9CD /* Debug */,
+				1DEB914008733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}
