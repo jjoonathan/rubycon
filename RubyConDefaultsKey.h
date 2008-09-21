@@ -13,7 +13,7 @@
 }
 - (id)initWithName:(NSString*)name domain:(RubyConDefaultsDomain*)d;
 - (NSString*)name;
-- (void)setName:(NSString*)newName;
+- (BOOL)setName:(NSString*)newName;
 - (NSString*)domainName;
 - (void)setDomainName:(NSString*)dn;
 - (id)value;

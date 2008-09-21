@@ -84,6 +84,18 @@ class RubyCocoaInputMethod < IRB::StdioInputMethod
   end
 end
 
+class RubyConsoleBouncer
+	def initialize(target,iserr)
+		@iserr=iserr
+		@target=target
+	end
+	
+	def write(str)
+		@target.write(str,@iserr)
+	end
+end
+		
+
 # this is an output handler for IRB 
 # and a delegate and controller for an NSTextView
 class RubyConsole < OSX::NSObject
@@ -114,8 +126,10 @@ class RubyConsole < OSX::NSObject
 	IRB.conf[:MAIN_CONTEXT] = irb.context  
 	@old_stdout= $stdout
 	@old_stderr= $stderr
-	$stdout = self
-	$stderr = self
+	@stdout ||= RubyConsoleBouncer.new(self,false)
+	@stderr ||= RubyConsoleBouncer.new(self,true)
+	$stdout = @stdout
+	$stderr = @stderr
   end
   
   def windowShouldClose(wind)
@@ -133,14 +147,15 @@ class RubyConsole < OSX::NSObject
     $RubyConConsoles.delete self
   end
 
-  def attString(string)
-    OSX::NSAttributedString.alloc.initWithString_attributes(string, { OSX::NSFontAttributeName, @font })
+  def attString(string,red=false)
+	color=(red)?(OSX::NSColor.redColor):(OSX::NSColor.blackColor)
+    OSX::NSAttributedString.alloc.initWithString_attributes(string, { OSX::NSFontAttributeName, @font, OSX::NSForegroundColorAttributeName, color })
   end
 
-  def write(object)
+  def write(object,red=false)
 	@tv_mutex.synchronize {
 		string = object.to_s
-		@textview.textStorage.appendAttributedString(attString(string))
+		@textview.textStorage.appendAttributedString(attString(string,red))
 		@startOfInput = lengthOfTextView
 		@textview.scrollRangeToVisible([lengthOfTextView, 0])
 		local_hash={}
@@ -375,3 +390,21 @@ if bn && bn.load
 	main_menu.addItem fs_menu_item
 	$FScript_menu = fs_menu_item
 end
+
+class RubyConTopBouncer < IO
+	def initialize(is_err)
+		@is_err= is_err
+		super(0)
+	end
+	def puts(str) write(str.to_s.chomp+"\n") end
+	def write(str)
+		((@is_err)?$stderr:$stdout).write(str)
+	end
+	def self.flush() nil end
+end
+
+$:<<OSX::NSBundle.mainBundle.resourcePath
+$program_name = OSX::NSBundle.mainBundle.executablePath.to_s
+alias $0 $program_name
+STDOUT=RubyConTopBouncer.new(false)
+STDERR=RubyConTopBouncer.new(true)

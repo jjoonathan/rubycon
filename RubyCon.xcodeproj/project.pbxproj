@@ -13,7 +13,7 @@
 		FC06C1680E6E4E06009B604D /* RubyConDefaultsKey.m in Sources */ = {isa = PBXBuildFile; fileRef = FC06C1670E6E4E06009B604D /* RubyConDefaultsKey.m */; };
 		FC0A37CD0E23229B004BBFA5 /* console.rb in Resources */ = {isa = PBXBuildFile; fileRef = FC0A37CC0E23229B004BBFA5 /* console.rb */; };
 		FC2C33260E62507600E1F5E7 /* RubyCocoa.framework in Copy In Custom RubyCocoa */ = {isa = PBXBuildFile; fileRef = FC2C330E0E62502300E1F5E7 /* RubyCocoa.framework */; };
-		FC2C33390E62538C00E1F5E7 /* RubyCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC2C33380E62538C00E1F5E7 /* RubyCocoa.framework */; };
+		FC339D9A0E74EF7600111FF7 /* RubyCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC2C33380E62538C00E1F5E7 /* RubyCocoa.framework */; };
 		FC6634B90E4BC33C0092C2EF /* RubyConUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FC6634B80E4BC33C0092C2EF /* RubyConUtilities.m */; };
 		FC6635050E4BCBFE0092C2EF /* rubyconrc.rb in Resources */ = {isa = PBXBuildFile; fileRef = FC6635040E4BCBFE0092C2EF /* rubyconrc.rb */; };
 		FC6636770E4CC21C0092C2EF /* NSWindow+WindowList.m in Sources */ = {isa = PBXBuildFile; fileRef = FC6636760E4CC21C0092C2EF /* NSWindow+WindowList.m */; };
@@ -72,7 +72,7 @@
 		FC06C1670E6E4E06009B604D /* RubyConDefaultsKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RubyConDefaultsKey.m; sourceTree = "<group>"; };
 		FC0A37CC0E23229B004BBFA5 /* console.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = console.rb; sourceTree = "<group>"; };
 		FC2C330E0E62502300E1F5E7 /* RubyCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RubyCocoa.framework; sourceTree = "<group>"; };
-		FC2C33380E62538C00E1F5E7 /* RubyCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RubyCocoa.framework; path = /Library/Frameworks/RubyCocoa.framework; sourceTree = "<absolute>"; };
+		FC2C33380E62538C00E1F5E7 /* RubyCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RubyCocoa.framework; path = /System/Library/Frameworks/RubyCocoa.framework; sourceTree = "<absolute>"; };
 		FC6634B70E4BC33C0092C2EF /* RubyConUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyConUtilities.h; sourceTree = "<group>"; };
 		FC6634B80E4BC33C0092C2EF /* RubyConUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RubyConUtilities.m; sourceTree = "<group>"; };
 		FC6635040E4BCBFE0092C2EF /* rubyconrc.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = rubyconrc.rb; sourceTree = "<group>"; };
@@ -101,8 +101,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC339D9A0E74EF7600111FF7 /* RubyCocoa.framework in Frameworks */,
 				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
-				FC2C33390E62538C00E1F5E7 /* RubyCocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

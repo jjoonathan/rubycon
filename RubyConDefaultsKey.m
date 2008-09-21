@@ -7,6 +7,7 @@
  */
 #import "RubyConDefaultsKey.h"
 #import "RubyConDefaultsDomain.h"
+#import "RubyConDefaultsController.h"
 
 @implementation RubyConDefaultsKey
 - (id)initWithName:(NSString*)name domain:(RubyConDefaultsDomain*)d {
@@ -32,10 +33,17 @@
 	return [[self value] description];
 }
 
-- (void)setName:(NSString*)newName {
-	if ([mName isEqualToString:newName]) return;
+- (BOOL)setName:(NSString*)newName {
+	if (![[self domainName] isEqualToString:[[RubyConDefaultsController appDomain] name]]) return NO;
+	if ([mName isEqualToString:newName]) return NO;
 	id val = [self value];
-	
+	NSUserDefaults* sd = [NSUserDefaults standardUserDefaults];
+	[sd removeObjectForKey:mName];
+	if ([[sd objectForKey:mName] isEqualTo:val]) return NO;
+	[sd setObject:val forKey:newName];
+	[mName release];
+	mName = [newName copy];
+	return YES;
 }
 
 - (id)color {
