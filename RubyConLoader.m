@@ -14,7 +14,11 @@
 }
 
 + (void)load {
-	RBBundleInit([[[NSBundle bundleForClass:self] pathForResource:@"console" ofType:@"rb"] UTF8String], self, nil);
+	//Don't load into rubycocoa apps. Two rubies load, and its a big mess.
+	if (!system([[NSString stringWithFormat:@"nm \"%@\" | grep RBApplicationMain", [[NSBundle mainBundle] executablePath]] UTF8String])) return;
+		
+	//But otherwise go ahead
+	RBBundleInit([[[NSBundle bundleForClass:self] pathForResource:@"rubycon" ofType:@"rb"] UTF8String], self, nil);
 }
 
 @end

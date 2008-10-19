@@ -3,11 +3,10 @@
 #  
 # Find more information about this file online at:
 #    http://www.rubycocoa.com/mastering-cocoa-with-ruby
-# Extensively modified with permission by Jonathan deWerd (jjoonathan@gmail.com).
+# Extensively modified for reuse with permission by Jonathan deWerd (jjoonathan@gmail.com).
 # Changes (c) 2008 Jonathan deWerd, released under a 3-clause BSD license.
 
 require 'irb'
-require 'osx/cocoa'
 require 'set'
 require 'thread'
 require 'info_window_controller'
@@ -15,7 +14,6 @@ require 'view_naming'
 require 'fscript'
 require 'monitor'
 $RubyConConsoles = Set.new
-$RubyConOldStdout = $stdout
 
 def with(x)
 	yield x if block_given?; x
@@ -362,64 +360,79 @@ class ConsoleWindowFactory < OSX::NSObject
 #Add the ruby menu
 top_menu= OSX::NSMenu.alloc.initWithTitle ''
 
-top_menu_item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_('', :jump, '')
-icon_path = OSX::NSBundle.bundleForClass(OSX::RubyConLoader).pathForResource_ofType_('rubycon_icon','icns')
-ruby_icon = OSX::NSImage.alloc.initWithContentsOfFile(icon_path)
-ruby_icon.size= [16,16]
-top_menu_item.image= ruby_icon
-top_menu_item.submenu= top_menu
-top_menu_item.target= OSX::RubyConLoader
-top_menu_item.action= 'doNothing:'
-top_menu_item.enabled= true
-main_menu = OSX::NSApplication.sharedApplication.mainMenu
-main_menu.addItem top_menu_item
+begin
+  top_menu_item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_('', :jump, '')
+  icon_path = OSX::NSBundle.bundleForClass(OSX::RubyConLoader).pathForResource_ofType_('rubycon_icon','icns')
+  ruby_icon = OSX::NSImage.alloc.initWithContentsOfFile(icon_path)
+  ruby_icon.size= [16,16]
+  top_menu_item.image= ruby_icon
+  top_menu_item.submenu= top_menu
+  top_menu_item.target= OSX::RubyConLoader
+  top_menu_item.action= 'doNothing:'
+  top_menu_item.enabled= true
+  main_menu = OSX::NSApplication.sharedApplication.mainMenu
+  main_menu.addItem top_menu_item
+rescue Exception
+  $RubyConOldStdout.puts "Could not create rubycon menu: #{$!}. \n#{$!.backtrace.join('\n')}"
+end
 
-spawn_item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_('New Ruby Console', 'spawn:', 'R')
-spawn_item.keyEquivalentModifierMask= OSX::NSCommandKeyMask+OSX::NSAlternateKeyMask
-cfac = ConsoleWindowFactory.new
-spawn_item.target= cfac
-top_menu.addItem spawn_item
+begin
+  spawn_item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_('New Ruby Console', 'spawn:', 'R')
+  spawn_item.keyEquivalentModifierMask= OSX::NSCommandKeyMask+OSX::NSAlternateKeyMask
+  cfac = ConsoleWindowFactory.new
+  spawn_item.target= cfac
+  top_menu.addItem spawn_item
+  
+  name_view_item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_('Name Views', 'nameView:', 'V')
+  name_view_item.keyEquivalentModifierMask= OSX::NSCommandKeyMask+OSX::NSAlternateKeyMask
+  name_view_item.target= cfac
+  top_menu.addItem name_view_item
+  
+  user_defaults_item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_('User Defaults', 'defaultsView:', '')
+  user_defaults_item.target= cfac
+  top_menu.addItem user_defaults_item
+  
+  top_menu.addItem OSX::NSMenuItem.separatorItem()
+  
+  IRB.rc_scripts.each {|name,path|
+  	item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_("Edit #{name} RC Script", 'editrc:', '')
+  	item.representedObject=(path)
+  	item.target=(cfac)
+  	top_menu.addItem item
+  }
+rescue Exception
+  $RubyConOldStdout.puts "Could not populate rubycon menu: #{$!}. \n#{$!.backtrace.join('\n')}"
+end
 
-name_view_item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_('Name Views', 'nameView:', 'V')
-name_view_item.keyEquivalentModifierMask= OSX::NSCommandKeyMask+OSX::NSAlternateKeyMask
-name_view_item.target= cfac
-top_menu.addItem name_view_item
-
-user_defaults_item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_('User Defaults', 'defaultsView:', '')
-user_defaults_item.target= cfac
-top_menu.addItem user_defaults_item
-
-top_menu.addItem OSX::NSMenuItem.separatorItem()
-
-IRB.rc_scripts.each {|name,path|
-	item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_("Edit #{name} RC Script", 'editrc:', '')
-	item.representedObject=(path)
-	item.target=(cfac)
-	top_menu.addItem item
-}
-
-
-
-#Now add the fscript menu
-framework_search_paths = ["/System/Library/Frameworks/", "/Library/Frameworks/", "~/Library/Frameworks/"]
-bn = nil
-framework_search_paths.each {|s|
-	bn = OSX::NSBundle.bundleWithPath(s+"FScript.framework") unless bn
-}
-if bn && bn.load
-	fs_menu_item = OSX::FScriptMenuItem.alloc.init
-	cfac.patch_fscript(fs_menu_item.submenu)
-	fs_menu_item.title= 'a'
-	fs_menu_item.submenu.title= 'b'
-	fs_icon_path = OSX::NSBundle.bundleForClass(OSX::RubyConLoader).pathForResource_ofType_('fscript_menu_icon','icns')
-	fs_icon = OSX::NSImage.alloc.initWithContentsOfFile(fs_icon_path)
-	fs_icon.size= [16,16]
-	fs_menu_item.image= fs_icon
-	main_menu.addItem fs_menu_item
-	$FScript_menu = fs_menu_item
-	end
+begin
+  framework_search_paths = ["/System/Library/Frameworks/", "/Library/Frameworks/", "~/Library/Frameworks/"]
+  bn = nil
+  framework_search_paths.each {|s|
+  	bn = OSX::NSBundle.bundleWithPath(s+"FScript.framework") unless bn
+  }
+  if bn && bn.load
+  	fs_menu_item = OSX::FScriptMenuItem.alloc.init
+  	cfac.patch_fscript(fs_menu_item.submenu)
+  	fs_menu_item.title= 'a'
+  	fs_menu_item.submenu.title= 'b'
+  	fs_icon_path = OSX::NSBundle.bundleForClass(OSX::RubyConLoader).pathForResource_ofType_('fscript_menu_icon','icns')
+  	fs_icon = OSX::NSImage.alloc.initWithContentsOfFile(fs_icon_path)
+  	fs_icon.size= [16,16]
+  	fs_menu_item.image= fs_icon
+  	main_menu.addItem fs_menu_item
+  	$FScript_menu = fs_menu_item
+  	end
+rescue Exception
+  $RubyConOldStdout.puts "Could not create fscript menu: #{$!}. \n#{$!.backtrace.join('\n')}"
+end
 
 class RubyConTopBouncer < IO
+	def self.stdout
+		@stdout||=RubyConTopBouncer.new(false)
+	end
+	def self.stderr
+		@stderr||=RubyConTopBouncer.new(true)
+	end
 	def initialize(is_err)
 		@is_err= is_err
 		super(0)
@@ -429,10 +442,27 @@ class RubyConTopBouncer < IO
 		((@is_err)?$stderr:$stdout).write(str)
 		end
 	def self.flush() nil end
+	def self.processStderrData(dat)
+		self.stderr.write(dat.rubyString)
+	end
+	def self.processStdoutData(dat)
+		self.stdout.write(dat.rubyString)
+	end
 end
 
-$:<<OSX::NSBundle.mainBundle.resourcePath
-$program_name = OSX::NSBundle.mainBundle.executablePath.to_s
-alias $0 $program_name
-STDOUT=RubyConTopBouncer.new(false)
-STDERR=RubyConTopBouncer.new(true)
+begin
+  $:<<OSX::NSBundle.mainBundle.resourcePath
+  $program_name = OSX::NSBundle.mainBundle.executablePath.to_s
+  alias $0 $program_name
+  $rubycon_top_stdout_bouncer = RubyConTopBouncer.stdout
+  $rubycon_top_stderr_bouncer = RubyConTopBouncer.stderr
+rescue
+  $RubyConOldStdout.puts "Could not capture $0 and STDOUT, STDERR variables: #{$!}. \n#{$!.backtrace.join('\n')}"
+end
+
+begin
+	OSX::O3PipeControl.delegate= RubyConTopBouncer
+	OSX::O3PipeControl.capturingEnabled= true
+rescue
+  $RubyConOldStdout.puts "Could not capture stdout and stderr FDs: #{$!}"
+end
