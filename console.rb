@@ -372,6 +372,7 @@ begin
   top_menu_item.enabled= true
   main_menu = OSX::NSApplication.sharedApplication.mainMenu
   main_menu.addItem top_menu_item
+  top_menu_item.retain
 rescue Exception
   $RubyConOldStdout.puts "Could not create rubycon menu: #{$!}. \n#{$!.backtrace.join('\n')}"
 end
@@ -382,6 +383,7 @@ begin
   cfac = ConsoleWindowFactory.new
   spawn_item.target= cfac
   top_menu.addItem spawn_item
+  $rubycon_console_window_fac = cfac
   
   name_view_item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_('Name Views', 'nameView:', 'V')
   name_view_item.keyEquivalentModifierMask= OSX::NSCommandKeyMask+OSX::NSAlternateKeyMask

@@ -56,7 +56,8 @@ static NSTimer* sTimer;
 			sStderrPipesValid = YES;
 		}
 		sCapturing = YES;
-		if (!sTimer) sTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/20.0 target:self selector:@selector(checkPipes:) userInfo:nil repeats:YES];
+		if (!sTimer) sTimer = [NSTimer timerWithTimeInterval:1.0/20.0 target:self selector:@selector(checkPipes:) userInfo:nil repeats:YES];
+		[[NSRunLoop mainRunLoop] addTimer:sTimer forMode:NSRunLoopCommonModes];
 	}
 	
 	if (!ce&&sCapturing) {
@@ -124,16 +125,15 @@ static NSTimer* sTimer;
 	int s; char buffer[512];
 	
 	if (fcntl(sStdoutPipes[0], F_SETFL, O_NONBLOCK)==-1) {NSLog(@"Couldn't make reading nonblocking on stdout:%i",errno); return;}
+	fflush(stdout);
 	if (sStdoutPipesValid && [sDelegate respondsToSelector:@selector(processStdoutData:)]) {
 		intptr_t s;
-		fflush(stdout);
 		while (1) {
 			s = read(sStdoutPipes[0], buffer, sizeof(buffer));
 			if (s<=0) break;
 			[sDelegate performSelector:@selector(processStdoutData:) withObject:[NSData dataWithBytesNoCopy:buffer length:s freeWhenDone:NO]];
 		}
 	} else if (sStdoutPipesValid) {
-		fflush(stdout);
 		while (1) {
 			s = read(sStdoutPipes[0], buffer, sizeof(buffer));
 			if (s<=0) break;
@@ -142,16 +142,15 @@ static NSTimer* sTimer;
 	}
 	
 	if (fcntl(sStderrPipes[0], F_SETFL, O_NONBLOCK)==-1) {NSLog(@"Couldn't make reading nonblocking on stderr:%i",errno); return;}
+	fflush(stderr);
 	if (sStderrPipesValid && [sDelegate respondsToSelector:@selector(processStderrData:)]) {
 		intptr_t s;
-		fflush(stderr);
 		while (1) {
 			s = read(sStderrPipes[0], buffer, sizeof(buffer));
 			if (s<=0) break;
 			[sDelegate performSelector:@selector(processStderrData:) withObject:[NSData dataWithBytesNoCopy:buffer length:s freeWhenDone:NO]];
 		}
 	} else if (sStderrPipesValid) {
-		fflush(stderr);
 		while (1) {
 			s = read(sStderrPipes[0], buffer, sizeof(buffer));
 			if (s<=0) break;
