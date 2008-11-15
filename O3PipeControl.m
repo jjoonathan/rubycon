@@ -126,12 +126,16 @@ static NSTimer* sTimer;
 	
 	if (fcntl(sStdoutPipes[0], F_SETFL, O_NONBLOCK)==-1) {NSLog(@"Couldn't make reading nonblocking on stdout:%i",errno); return;}
 	fflush(stdout);
+	fsync(STDOUT_FILENO);
+	fsync(sStdoutPipes[1]);
 	if (sStdoutPipesValid && [sDelegate respondsToSelector:@selector(processStdoutData:)]) {
 		intptr_t s;
 		while (1) {
 			s = read(sStdoutPipes[0], buffer, sizeof(buffer));
 			if (s<=0) break;
-			[sDelegate performSelector:@selector(processStdoutData:) withObject:[NSData dataWithBytesNoCopy:buffer length:s freeWhenDone:NO]];
+			NSString* ostr = [sDelegate performSelector:@selector(processStdoutData:) withObject:[NSData dataWithBytesNoCopy:buffer length:s freeWhenDone:NO]];
+			const char* ostr_u = [ostr UTF8String];
+			if (ostr_u) write(sOldStdout, ostr_u, [ostr length]);
 		}
 	} else if (sStdoutPipesValid) {
 		while (1) {
@@ -140,15 +144,19 @@ static NSTimer* sTimer;
 			write(sOldStdout, buffer, s);
 		}		
 	}
-	
+
 	if (fcntl(sStderrPipes[0], F_SETFL, O_NONBLOCK)==-1) {NSLog(@"Couldn't make reading nonblocking on stderr:%i",errno); return;}
 	fflush(stderr);
+	fsync(STDERR_FILENO);
+	fsync(sStderrPipes[1]);
 	if (sStderrPipesValid && [sDelegate respondsToSelector:@selector(processStderrData:)]) {
 		intptr_t s;
 		while (1) {
 			s = read(sStderrPipes[0], buffer, sizeof(buffer));
 			if (s<=0) break;
-			[sDelegate performSelector:@selector(processStderrData:) withObject:[NSData dataWithBytesNoCopy:buffer length:s freeWhenDone:NO]];
+			NSString* ostr = [sDelegate performSelector:@selector(processStderrData:) withObject:[NSData dataWithBytesNoCopy:buffer length:s freeWhenDone:NO]];
+			const char* ostr_u = [ostr UTF8String];
+			if (ostr_u) write(sOldStderr, ostr_u, [ostr length]);
 		}
 	} else if (sStderrPipesValid) {
 		while (1) {

@@ -6,14 +6,12 @@
 # Extensively modified for reuse with permission by Jonathan deWerd (jjoonathan@gmail.com).
 # Changes (c) 2008 Jonathan deWerd, released under a 3-clause BSD license.
 
-require 'irb'
 require 'set'
 require 'thread'
 require 'info_window_controller'
 require 'view_naming'
 require 'fscript'
 require 'monitor'
-$RubyConConsoles = Set.new
 
 def with(x)
 	yield x if block_given?; x
@@ -32,87 +30,47 @@ def scrollableView(content)
     scrollview.autoresizingMask = resizingMask
 	scrollview
 	end
+	
+module RubyConsoleContext
+	include OSX
+end
 
-class RubyCocoaInputMethod < IRB::StdioInputMethod
-	attr_reader :line_no, :history_index
-	def initialize(console)
-		super() # superclass method has no arguments
-		@console = console
-		@continued_from_line = nil
-		@line = [nil] #Lines can be indexed by their line numbers
-		@history_index = 1
-		@line_no = 1
-		end
-	
-	def gets
-		m = @prompt.match(/(\d+)[>*]/)
-		level = m ? m[1].to_i : 0
-		if level > 0
-			@continued_from_line ||= @line_no
-			elsif @continued_from_line
-			mergeLastNLines(@line_no - @continued_from_line + 1)
-			@continued_from_line = nil
-			end
-		@console.write @prompt+"  "*level
-		string = @console.command_queue.deq
-		@line[@line_no] = string
-		@line_no += 1
-		@history_index = @line_no
-		string
-		end
-	
-	def mergeLastNLines(i)
-		return unless i > 1
-		range = -i..-1
-		@line[range] = @line[range].map {|l| l.chomp}.join("\n")
-		@line_no -= (i-1)
-		@history_index -= (i-1)
-		end
-	
-	def prevCmd
-		@line[@line_no] = @console.currentLine if @history_index==@line_no #Store off the current line if need be
-		@history_index -= 1 unless @history_index <= 1
-		@line[@history_index]
-		end
-	
-	def nextCmd
-		@line[@line_no] = @console.currentLine if @history_index==@line_no #Store off the current line if need be
-		@history_index += 1 unless @history_index == @line_no
-		@line[@history_index]
-		end
-	end
-
-class RubyConsoleBouncer
-	def initialize(target,iserr)
-		@iserr=iserr
-		@target=target
-		end
-	
-	def write(str)
-		@target.write(str,@iserr)
-		end
-	end
-
-
-# this is an output handler for IRB 
-# and a delegate and controller for an NSTextView
 class RubyConsole < OSX::NSObject
-	attr_accessor :textview, :inputMethod, :command_queue, :old_stdout, :old_stderr, :irb
+	attr_accessor :textview, :inputMethod, :binding_context, :history, :histidx, :preprompt_place, :hist_saved_line
+	
+	def self.rc_scripts()
+		return @rc_script_paths if @rc_script_paths
+		global_rc_path = 
+		@rc_script_paths = {
+			"Global" => OSX::NSBundle.bundleForClass(OSX::RubyConLoader).pathForResource_ofType_('rubyconrc','rb'),
+			"User"   => File.expand_path('~/Library/Rubycon/rubyconrc.rb'),
+			"Application" => File.expand_path("~/Library/Rubycon/#{OSX::NSBundle.mainBundle.bundleIdentifier}.rb")
+			#"Application" => OSX::NSBundle.mainBundle.pathForResource_ofType_('rubyconrc','rb')
+		}
+		end
+	
+	def self.top_console
+		$rubycon_top_console
+	end
+	
+	def self.new_binding_context()
+		RubyConsoleContext.module_eval("binding")
+	end
 	
 	def initWithTextView(textview)
 		init
-		@command_queue = Queue.new
+		@history=[]
 		@textview = textview
 		@textview.delegate = self
 		@textview.richText = false
 		@textview.continuousSpellCheckingEnabled = false
 		@textview.font = @font = OSX::NSFont.fontWithName_size('Monaco', 12.0)
-		@inputMethod = RubyCocoaInputMethod.new(self)
-		@context = Kernel::binding
+		@binding_context = RubyConsole.new_binding_context
 		@startOfInput = 0
 		@tv_mutex = Monitor.new
-		IRB.startInConsole(self)
-		$RubyConConsoles.add self
+		@histidx = 0
+		@history = []
+		draw_prompt()
 		self
 		end
 	
@@ -121,13 +79,8 @@ class RubyConsole < OSX::NSObject
 		end
 	
 	def console_did_become_main
-		IRB.conf[:MAIN_CONTEXT] = irb.context  
-		@old_stdout= $stdout
-		@old_stderr= $stderr
-		@stdout ||= RubyConsoleBouncer.new(self,false)
-		@stderr ||= RubyConsoleBouncer.new(self,true)
-		$stdout = @stdout
-		$stderr = @stderr
+		$rubycon_console_stack ||= []
+		$rubycon_top_console = self
 		end
 	
 	def windowShouldClose(wind)
@@ -136,30 +89,39 @@ class RubyConsole < OSX::NSObject
 		end
 	
 	def close(already_closing=false)
-		command_queue.enq "exit" if already_closing #Was closed by a user click, need to close IRB separately
-		$stdout = old_stdout
-		$stderr = old_stderr
-		IRB.conf[:MAIN_CONTEXT] = nil
+		$rubycon_console_stack ||= []
+		$rubycon_top_console = nil
 		textview.window.close unless already_closing
 		textview.window.release
-		$RubyConConsoles.delete self
 		end
 	
-	def attString(string,red=false)
-		color=(red)?(OSX::NSColor.redColor):(OSX::NSColor.blackColor)
-		OSX::NSAttributedString.alloc.initWithString_attributes(string, { OSX::NSFontAttributeName, @font, OSX::NSForegroundColorAttributeName, color })
+	def attString(string,type)
+		attribs = { OSX::NSFontAttributeName => @font, OSX::NSForegroundColorAttributeName => OSX::NSColor.blackColor }
+		case type
+			when :stderr: attribs[OSX::NSForegroundColorAttributeName] = OSX::NSColor.redColor
+			when :stdin || :retval: attribs[OSX::NSUnderlineStyleAttributeName] = OSX::NSUnderlineStyleSingle
+			when :stdout: #Default
+		end
+		OSX::NSAttributedString.alloc.initWithString_attributes(string, attribs)
 		end
 	
-	def write(object,red=false)
+	def write(object,type=:stdin)
 		@tv_mutex.synchronize {
 			string = object.to_s
-			@textview.textStorage.appendAttributedString(attString(string,red))
-			@startOfInput = lengthOfTextView
+			idx = lengthOfTextView
+			if type==:stdout or type==:stderr then
+				idx=@preprompt_place
+				@preprompt_place += string.length
+				@startOfInput += string.length
+				end
+			@textview.textStorage.insertAttributedString_atIndex_(attString(string,type),idx)
 			@textview.scrollRangeToVisible([lengthOfTextView, 0])
-			local_hash={}
-			local_names=irb.context.evaluate('local_variables',0)-["_"]
-			local_names.each {|i| local_hash[i]=irb.context.evaluate("#{i}",0) }
-			FScript.autobridge_locals(local_hash)
+			if type==:stdin then
+				local_hash={}
+				local_names=eval('local_variables',binding_context)-["_"]
+				local_names.each {|i| local_hash[i]=eval("#{i}",binding_context) }
+				FScript.autobridge_locals(local_hash)
+				end
 		}
 		end
 	
@@ -185,22 +147,36 @@ class RubyConsole < OSX::NSObject
 	def replaceLineWithHistory(s)
 		range = OSX::NSRange.new(@startOfInput, lengthOfTextView - @startOfInput)
 		@tv_mutex.synchronize {
-			@textview.textStorage.replaceCharactersInRange_withAttributedString(range, attString(s.chomp))
+			@textview.textStorage.replaceCharactersInRange_withAttributedString(range, attString(s.chomp, :stdin))
 			@textview.scrollRangeToVisible([lengthOfTextView, 0])
 		}
 		true
 		end
 	
+	def draw_prompt()
+		@preprompt_place = lengthOfTextView
+		write(">> ", :stdin)
+		@startOfInput = lengthOfTextView
+		@histidx=0
+	end
+	
 	def run_command(comm)
-		command_queue.enq comm
+		@preprompt_place = lengthOfTextView
+		begin
+			result=eval(comm,@binding_context, "RubyCon_Console", 0)
+			write("=> #{result.inspect.chomp}\n", :retval)
+			rescue Exception=>e
+			write("#{e.to_s}\n", :stderr)
+			end
+		@history<<comm
+		draw_prompt()
 		end
 	
-	def textView_shouldChangeTextInRange_replacementString(
-														   textview, range, replacement)
+	def textView_shouldChangeTextInRange_replacementString(textview, range, replacement)
 		@tv_mutex.synchronize {
 			if range.location < @startOfInput
 				moveAndScrollToIndex(@startOfInput)
-				@textview.textStorage.replaceCharactersInRange_withString_(OSX::NSRange.new(@startOfInput,0),replacement)
+				@textview.textStorage.replaceCharactersInRange_withAttributedString_(OSX::NSRange.new(@startOfInput,0),attString(replacement,:stdin))
 				return false
 				end
 			replacement = replacement.to_s.gsub("\r","\n")
@@ -208,27 +184,28 @@ class RubyConsole < OSX::NSObject
 			if replacement.length > 0 and replacement[-1].chr == "\n"
 				return true if replacement.length!=1 && range.location!=lengthOfTextView #Allow newline pasting
 				inline_newline = replacement.length==1 && range.location!=lengthOfTextView
-				@textview.textStorage.replaceCharactersInRange_withString_(range, replacement) unless inline_newline
+				@textview.textStorage.replaceCharactersInRange_withAttributedString_(range, attString(replacement,:stdin)) unless inline_newline
 				if inline_newline
 					end_of_tv = OSX::NSRange.new(lengthOfTextView,0)
 					@textview.setSelectedRange(end_of_tv)
-					@textview.textStorage.replaceCharactersInRange_withString_(end_of_tv,"\n")
+					@textview.textStorage.replaceCharactersInRange_withAttributedString_(end_of_tv,attString("\n",:stdin))
 					end
 				cl=currentLine
 				@startOfInput = lengthOfTextView
 				run_command cl
 				return false
 				end
+			if range.location>=@startOfInput
+				moveAndScrollToIndex(@startOfInput)
+				@textview.textStorage.replaceCharactersInRange_withAttributedString_(OSX::NSRange.new(range.location,range.length),attString(replacement,:stdin))
+				moveAndScrollToIndex(range.location+replacement.length)
+				return false
+				end
 		}
 		true
 		end
 	
-	def keyDown(evt)
-		puts evt.description
-		end
-	
-	def textView_willChangeSelectionFromCharacterRange_toCharacterRange(
-																		textview, oldRange, newRange)
+	def textView_willChangeSelectionFromCharacterRange_toCharacterRange(textview, oldRange, newRange)
 		if (newRange.length == 0) and (newRange.location < @startOfInput)
 			return oldRange if (oldRange.location>=@startOfInput)
 			rng = 0
@@ -243,11 +220,20 @@ class RubyConsole < OSX::NSObject
 	def textView_doCommandBySelector(textview, selector)
 		case selector
 			when "moveUp:"
-			replaceLineWithHistory(@inputMethod.prevCmd)
-			moveAndScrollToIndex(lengthOfTextView)
+				@hist_saved_line=currentLine if @histidx==0
+				if @histidx<@history.size
+					@histidx+=1
+					replaceLineWithHistory(@history[-@histidx])
+					end
 			when "moveDown:"
-			replaceLineWithHistory(@inputMethod.nextCmd)
-			moveAndScrollToIndex(lengthOfTextView)
+				if @histidx==1
+					@histidx=0
+					replaceLineWithHistory(@hist_saved_line)
+					end
+				if @histidx>1
+					@histidx-=1
+					replaceLineWithHistory(@history[-@histidx])
+					end
 			when "moveToBeginningOfParagraph:"
 			moveAndScrollToIndex(@startOfInput)
 			when "moveToBeginningOfLine:"
@@ -258,61 +244,6 @@ class RubyConsole < OSX::NSObject
 			moveAndScrollToIndex(lengthOfTextView)
 			else
 			false
-			end
-		end
-	end
-
-module IRB
-	def IRB.rc_scripts()
-		return @rc_script_paths if @rc_script_paths
-		global_rc_path = 
-		@rc_script_paths = {
-			"Global" => OSX::NSBundle.bundleForClass(OSX::RubyConLoader).pathForResource_ofType_('rubyconrc','rb'),
-			"User"   => File.expand_path('~/Library/Rubycon/rubyconrc.rb'),
-			"Application" => File.expand_path("~/Library/Rubycon/#{OSX::NSBundle.mainBundle.bundleIdentifier}.rb")
-			#"Application" => OSX::NSBundle.mainBundle.pathForResource_ofType_('rubyconrc','rb')
-		}
-		end
-	
-	def IRB.startInConsole(console)
-		if not $IRB_has_been_setup
-			IRB.setup(nil)
-			@CONF[:PROMPT_MODE] = :SIMPLE
-			@CONF[:VERBOSE] = false
-			@CONF[:ECHO] = true
-			$IRB_has_been_setup = true
-			end
-		irb = Irb.new(nil, console.inputMethod, console)
-		@CONF[:IRB_RC].call(irb.context) if @CONF[:IRB_RC]
-		@CONF[:MAIN_CONTEXT] = irb.context
-		console.irb= irb
-		
-		console.console_did_become_main #Get stdout set right
-		self.rc_scripts.each_value {|p|
-			next unless p && File.exists?(p)
-			irb.context.evaluate("load #{'"'+p+'"'}", 0)
-		}
-		irb.context.evaluate('include OSX',0)
-		
-		Thread.new {
-			catch(:IRB_EXIT) do
-				loop do
-					begin
-						irb.eval_input
-						rescue Exception
-						errstr = "#{$!}"
-						console.close if errstr=="exit" || errstr=="SIGTERM"
-						puts "Error: #{$!}"
-						end
-					end
-				end
-			console.close
-		}
-		end
-	
-	class Context
-		def prompting?
-			true
 			end
 		end
 	end
@@ -395,8 +326,8 @@ begin
   top_menu.addItem user_defaults_item
   
   top_menu.addItem OSX::NSMenuItem.separatorItem()
-  
-  IRB.rc_scripts.each {|name,path|
+
+  RubyConsole.rc_scripts.each {|name,path|
   	item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_("Edit #{name} RC Script", 'editrc:', '')
   	item.representedObject=(path)
   	item.target=(cfac)
@@ -428,27 +359,20 @@ rescue Exception
   $RubyConOldStdout.puts "Could not create fscript menu: #{$!}. \n#{$!.backtrace.join('\n')}"
 end
 
-class RubyConTopBouncer < IO
-	def self.stdout
-		@stdout||=RubyConTopBouncer.new(false)
+class RubyConTopBouncer
+	def processStderrData(dat)
+		if $rubycon_top_console then
+			$rubycon_top_console.write(dat.rubyString, :stderr)
+			else
+			dat.rubyString
+			end
 	end
-	def self.stderr
-		@stderr||=RubyConTopBouncer.new(true)
-	end
-	def initialize(is_err)
-		@is_err= is_err
-		super(0)
-		end
-	def puts(str) write(str.to_s.chomp+"\n") end
-	def write(str)
-		((@is_err)?$stderr:$stdout).write(str)
-		end
-	def self.flush() nil end
-	def self.processStderrData(dat)
-		self.stderr.write(dat.rubyString)
-	end
-	def self.processStdoutData(dat)
-		self.stdout.write(dat.rubyString)
+	def processStdoutData(dat)
+		if $rubycon_top_console then
+			$rubycon_top_console.write(dat.rubyString, :stdout)
+			else
+			dat.rubyString
+			end
 	end
 end
 
@@ -456,14 +380,13 @@ begin
   $:<<OSX::NSBundle.mainBundle.resourcePath
   $program_name = OSX::NSBundle.mainBundle.executablePath.to_s
   alias $0 $program_name
-  $rubycon_top_stdout_bouncer = RubyConTopBouncer.stdout
-  $rubycon_top_stderr_bouncer = RubyConTopBouncer.stderr
 rescue
   $RubyConOldStdout.puts "Could not capture $0 and STDOUT, STDERR variables: #{$!}. \n#{$!.backtrace.join('\n')}"
 end
 
 begin
-	OSX::O3PipeControl.delegate= RubyConTopBouncer
+	$rubycon_top_bouncer = RubyConTopBouncer.new
+	OSX::O3PipeControl.delegate= $rubycon_top_bouncer
 	OSX::O3PipeControl.capturingEnabled= true
 rescue
   $RubyConOldStdout.puts "Could not capture stdout and stderr FDs: #{$!}"
