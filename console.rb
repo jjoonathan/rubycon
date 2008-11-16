@@ -3,7 +3,7 @@
 #  
 # Find more information about this file online at:
 #    http://www.rubycocoa.com/mastering-cocoa-with-ruby
-# Extensively modified for reuse with permission by Jonathan deWerd (jjoonathan@gmail.com).
+# Extensively modified (more like rewritten) with permission by Jonathan deWerd (jjoonathan@gmail.com).
 # Changes (c) 2008 Jonathan deWerd, released under a 3-clause BSD license.
 
 require 'set'
@@ -269,7 +269,7 @@ class ConsoleWindowFactory < OSX::NSObject
 		console = RubyConsole.alloc.initWithTextView textview
 		with window do |w|
 			w.contentView = scrollableView(textview)
-			w.title = "RubyCocoa Console"
+			w.title = "MacRuby Console"
 			w.delegate = console
 			w.center
 			w.makeKeyAndOrderFront(self)
