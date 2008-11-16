@@ -96,7 +96,7 @@ class RubyConsole < OSX::NSObject
 		end
 	
 	def attString(string,type)
-		attribs = { OSX::NSFontAttributeName => @font, OSX::NSForegroundColorAttributeName => OSX::NSColor.blackColor }
+		attribs = { OSX::NSFontAttributeName => @font, OSX::NSForegroundColorAttributeName => OSX::NSColor.whiteColor }
 		case type
 			when :stderr: attribs[OSX::NSForegroundColorAttributeName] = OSX::NSColor.redColor
 			when :stdin || :retval: attribs[OSX::NSUnderlineStyleAttributeName] = OSX::NSUnderlineStyleSingle
@@ -252,12 +252,13 @@ class RubyConsole < OSX::NSObject
 class ConsoleWindowFactory < OSX::NSObject
 	def spawn(sender)
 		frame = [50,50,1200,600]
-		styleMask = OSX::NSTitledWindowMask + OSX::NSClosableWindowMask + 
-		OSX::NSMiniaturizableWindowMask + OSX::NSResizableWindowMask
-		window = OSX::NSWindow.alloc.initWithContentRect_styleMask_backing_defer(
-																				 frame, styleMask, OSX::NSBackingStoreBuffered, false)
+		styleMask = OSX::NSTitledWindowMask + OSX::NSClosableWindowMask + OSX::NSMiniaturizableWindowMask + OSX::NSResizableWindowMask
+		window = OSX::NSWindow.alloc.initWithContentRect_styleMask_backing_defer(frame, styleMask, OSX::NSBackingStoreBuffered, false)
 		window.retain
+		window.opaque=false
+		window.backgroundColor=OSX::NSColor.clearColor
 		textview = OSX::NSTextView.alloc.initWithFrame(frame)
+		textview.backgroundColor=OSX::NSColor.colorWithCalibratedRed_green_blue_alpha_(0, 0, 0, 0.8)
 		console = RubyConsole.alloc.initWithTextView textview
 		with window do |w|
 			w.contentView = scrollableView(textview)
