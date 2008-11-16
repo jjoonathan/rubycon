@@ -173,7 +173,7 @@ class RubyConsole < OSX::NSObject
 			result=eval(comm,@binding_context, "RubyCon_Console", 0)
 			write("=> #{result.inspect.chomp}\n", :retval)
 			rescue Exception=>e
-			write("#{e.to_s}\n", :stderr)
+			write("#{e.inspect}\n", :stderr)
 			end
 		@history<<comm
 		draw_prompt()
