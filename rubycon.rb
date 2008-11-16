@@ -6,9 +6,10 @@
 #  Copyright (c) 2008 Jonathan deWerd.
 #  Released under a 3-clause BSD license.
 require 'osx/cocoa'
+include OSX
 
-if !(OSX::NSApplication.sharedApplication.mainMenu) then
-	puts "RubyCon not loading into #{OSX::NSBundle.mainBundle.bundleIdentifier.to_s} because it has no main menu (RubyCon assumes its headless)."
+if !(NSApplication.sharedApplication.mainMenu) then
+	puts "RubyCon not loading into #{NSBundle.mainBundle.bundleIdentifier.to_s} because it has no main menu (RubyCon assumes its headless)."
 	else
 	
 	begin

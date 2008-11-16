@@ -1,15 +1,15 @@
-class ConsoleWindowFactory < OSX::NSObject
+class ConsoleWindowFactory < NSObject
 	def patch_fscript(fs_menu)
 		if fs_menu
 			fs_mitem_console = fs_menu.itemArray.find{|x| x.title.to_s=~/console/i}
 			fs_mitem_browser = fs_menu.itemArray.find{|x| x.title.to_s=~/browser/i}
 			if fs_mitem_console
 				fs_mitem_console.keyEquivalent= 'F'
-				fs_mitem_console.keyEquivalentModifierMask= OSX::NSCommandKeyMask+OSX::NSAlternateKeyMask
+				fs_mitem_console.keyEquivalentModifierMask= NSCommandKeyMask+NSAlternateKeyMask
 				end
 			if fs_mitem_browser
 				fs_mitem_browser.keyEquivalent= 'B'
-				fs_mitem_browser.keyEquivalentModifierMask= OSX::NSCommandKeyMask+OSX::NSAlternateKeyMask
+				fs_mitem_browser.keyEquivalentModifierMask= NSCommandKeyMask+NSAlternateKeyMask
 				end
 			end
 		end
@@ -38,7 +38,7 @@ module FScript
 	end
 
 	def self.vars
-		OSX::RubyConUtilities.arrayByCallingSelector_onObject_('identifiers', $FScript_menu.interpreterView.interpreter)
+		RubyConUtilities.arrayByCallingSelector_onObject_('identifiers', $FScript_menu.interpreterView.interpreter)
 	end
 end
 

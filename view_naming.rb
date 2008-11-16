@@ -2,10 +2,10 @@ require 'info_window_controller'
 require 'label_window_controller'
 require 'focus_window_controller'
 
-class ConsoleWindowFactory < OSX::NSObject
+class ConsoleWindowFactory < NSObject
 	def nameView(sender)
-		crosshair_cursor = OSX::NSCursor.crosshairCursor
-		future = OSX::NSDate.distantFuture
+		crosshair_cursor = NSCursor.crosshairCursor
+		future = NSDate.distantFuture
 		
 		focusWindow = FocusWindowController.new()
 		
@@ -17,19 +17,19 @@ class ConsoleWindowFactory < OSX::NSObject
 		old_pos = 
 		loop do
 			crosshair_cursor.push
-			event = OSX::NSApplication.sharedApplication.nextEventMatchingMask_untilDate_inMode_dequeue_(0x7FFFFFFF, OSX::NSDate.dateWithTimeIntervalSinceNow(0.5), OSX::NSEventTrackingRunLoopMode, true)
+			event = NSApplication.sharedApplication.nextEventMatchingMask_untilDate_inMode_dequeue_(0x7FFFFFFF, NSDate.dateWithTimeIntervalSinceNow(0.5), NSEventTrackingRunLoopMode, true)
 			crosshair_cursor.pop
 			new_hit_view = nil
-			new_hit_view = hit_view if pos == OSX::NSEvent.mouseLocation
-			pos = OSX::NSEvent.mouseLocation
+			new_hit_view = hit_view if pos == NSEvent.mouseLocation
+			pos = NSEvent.mouseLocation
 			
 			#Deal with movement
 			if !new_hit_view then
 				#See which view we are over
-				OSX::NSWindow.listOfAllAppWindows
+				NSWindow.listOfAllAppWindows
 				ignore_winds = viewLabelArray.map{|x| x.info_window}
 				ignore_views = viewLabelArray.map{|x| x.info_view}
-				winds = OSX::NSWindow.listOfAllAppWindows.reject {|x| x==focusWindow.info_window || ignore_winds.include?(x)}
+				winds = NSWindow.listOfAllAppWindows.reject {|x| x==focusWindow.info_window || ignore_winds.include?(x)}
 				winds.each {|x|
 					new_hit_view = x.contentView.superview.hitTest(x.convertScreenToBase(pos))
 					new_hit_view = nil if new_hit_view and ignore_winds.include?(new_hit_view.window)
@@ -50,16 +50,16 @@ class ConsoleWindowFactory < OSX::NSObject
 			next unless event
 			
 			#Deal with clicks
-			if event.oc_type==OSX::NSLeftMouseDown then
+			if event.oc_type==NSLeftMouseDown then
 				break if (hit_view==nil || viewLabelArray.find {|x| x.view==hit_view})
 				iw = LabelWindowController.new(hit_view, viewLabelArray.size)
 				viewLabelArray<<iw
 				iw.show
-				break if (event.modifierFlags | OSX::NSCommandKeyMask)==0
+				break if (event.modifierFlags | NSCommandKeyMask)==0
 			end
 			
 			#Deal with keys (any keydown will finish the selection)
-			break if event.oc_type==OSX::NSKeyDown
+			break if event.oc_type==NSKeyDown
 		end
 		temporaryInfoWindow.close
 		focusWindow.close
