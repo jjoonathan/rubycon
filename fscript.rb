@@ -1,14 +1,3 @@
-class <<self
-	alias_method(:method_missing_before_rubycon, :method_missing)
-	def method_missing(id, *params)
-		if params.empty?
-			fs_val = FScript[id.to_s]
-			return fs_val if fs_val
-		end
-		method_missing_before_rubycon(id, *params)
-	end
-end
-
 class ConsoleWindowFactory < OSX::NSObject
 	def patch_fscript(fs_menu)
 		if fs_menu

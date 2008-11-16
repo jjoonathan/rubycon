@@ -30,8 +30,15 @@ def scrollableView(content)
     scrollview.autoresizingMask = resizingMask
 	scrollview
 	end
-	
+
 module RubyConsoleContext
+	def self.method_missing(id, *params)
+		if params.empty?
+			fs_val = FScript[id.to_s]
+			return fs_val if fs_val
+			end
+		Object.method_missing(id,*params)
+		end
 	include OSX
 end
 
