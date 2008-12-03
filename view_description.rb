@@ -10,7 +10,7 @@ class RubyConViewDescriber
 		str+="\nBounds: #{v.bounds.to_a.inspect}"
 		
 		#NSControl Description
-		if v.is_a?(OSX::NSControl) then
+		if v.is_a?(NSControl) then
 		str+="\nTarget: #{v.target.to_s}"
 		str+="\nAction: #{v.action.to_s}"
 		end
@@ -23,11 +23,11 @@ class RubyConViewDescriber
 		#Key-equiv Controls
 		if v.respondsToSelector('keyEquivalent') && v.respondsToSelector('keyEquivalentModifierMask') && v.keyEquivalent && !v.keyEquivalent.empty?
 			mask=v.keyEquivalentModifierMask
-			equiv=OSX::NSString.stringWithString("")
-			equiv=equiv.stringByAppendingFormat("%C",0x21E7) if (mask|OSX::NSShiftKeyMask)!=0
-			equiv=equiv.stringByAppendingFormat("%C",0x2325) if (mask|OSX::NSOptionKeyMask)!=0
-			equiv=equiv.stringByAppendingFormat("%C",0x2303) if (mask|OSX::NSControlKeyMask)!=0
-			equiv=equiv.stringByAppendingFormat("%C",0x2318) if (mask|OSX::NSCommandKeyMask)!=0
+			equiv=NSString.stringWithString("")
+			equiv=equiv.stringByAppendingFormat("%C",0x21E7) if (mask|NSShiftKeyMask)!=0
+			equiv=equiv.stringByAppendingFormat("%C",0x2325) if (mask|NSOptionKeyMask)!=0
+			equiv=equiv.stringByAppendingFormat("%C",0x2303) if (mask|NSControlKeyMask)!=0
+			equiv=equiv.stringByAppendingFormat("%C",0x2318) if (mask|NSCommandKeyMask)!=0
 			equiv=equiv.stringByAppendingString(v.keyEquivalent)
 			str+=equiv
 		end

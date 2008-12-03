@@ -5,10 +5,18 @@
 #  Created by Jonathan deWerd on 10/4/08.
 #  Copyright (c) 2008 Jonathan deWerd.
 #  Released under a 3-clause BSD license.
-require 'osx/cocoa'
+begin
+	NSString
+	framework 'Cocoa'
+	RubyConBundle = NSBundle.bundleForClass(RubyConLoader)
+	$:<<(RubyConBundle.resourcePath())
+	rescue NameError=>e
+	require 'osx/cocoa'
+	include OSX
+	end
 
-if !(OSX::NSApplication.sharedApplication.mainMenu) then
-	puts "RubyCon not loading into #{OSX::NSBundle.mainBundle.bundleIdentifier.to_s} because it has no main menu (RubyCon assumes its headless)."
+if !(NSApplication.sharedApplication.mainMenu) then
+	puts "RubyCon not loading into #{NSBundle.mainBundle.bundleIdentifier.to_s} because it has no main menu (RubyCon assumes its headless)."
 	else
 	
 	begin

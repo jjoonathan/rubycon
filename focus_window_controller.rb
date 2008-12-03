@@ -3,13 +3,13 @@ require 'info_window_controller'
 class FocusWindowController < InfoWindowController
 	def initialize(view=nil)
 		super()
-		@box_view = OSX::RubyConFocusView.alloc.initWithFrame([0,0,400,100])
-		@box_view.autoresizingMask=(OSX::NSViewWidthSizable + OSX::NSViewHeightSizable)
+		@box_view = RubyConFocusView.alloc.initWithFrame([0,0,400,100])
+		@box_view.autoresizingMask=(NSViewWidthSizable + NSViewHeightSizable)
 		@info_window.contentView=@box_view
 		
 		self.view= view
 		@info_window.ignoresMouseEvents= true
-		@info_window.backgroundColor= OSX::NSColor.colorWithCalibratedWhite_alpha_(0,0.4)
+		@info_window.backgroundColor= NSColor.colorWithCalibratedWhite_alpha_(0,0.4)
 	end
 	
 	def string

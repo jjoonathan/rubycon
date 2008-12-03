@@ -12,6 +12,12 @@
 + (BOOL)capturingEnabled;
 + (void)setCapturingEnabled:(BOOL)ce;
 
++ (void)flush; //Synonym for checkPipes:
++ (BOOL)manualFlush;
++ (void)setManualFlush:(BOOL)newFlush;
+
++ (void)checkPipes:(id)notification;
+
 ///When capturing is enabled, the delegate will receive calls processStderrData:(NSData*) and processStdoutData:(NSData*) when new data is put through those pipes. If the delegate doesn't respond to one of those methods, the data is forwarded to the old output sink.
 + (id)delegate;
 + (void)setDelegate:(id)newDele;

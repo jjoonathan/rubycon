@@ -11,6 +11,7 @@
 @implementation O3PipeControl
 static BOOL sCapturing = NO;
 static BOOL sForwardsRegularInput = YES;
+static BOOL sManualFlush = NO;
 static int sOldStdout = 1;
 static int sOldStderr = 2;
 static int sOldStdin = 0;
@@ -34,6 +35,9 @@ static NSTimer* sTimer;
 	if (sOldStderr==-1) {sOldStderr=2; NSLog(@"OutputControl couldn't dup stderr");}
 }
 
++ (BOOL)manualFlush {return sManualFlush;}
++ (void)setManualFlush:(BOOL)newFlush {sManualFlush = newFlush;}
+
 + (BOOL)capturingEnabled {return sCapturing;}
 + (void)setCapturingEnabled:(BOOL)ce {
 	int e;
@@ -56,8 +60,10 @@ static NSTimer* sTimer;
 			sStderrPipesValid = YES;
 		}
 		sCapturing = YES;
-		if (!sTimer) sTimer = [NSTimer timerWithTimeInterval:1.0/20.0 target:self selector:@selector(checkPipes:) userInfo:nil repeats:YES];
-		[[NSRunLoop mainRunLoop] addTimer:sTimer forMode:NSRunLoopCommonModes];
+		if (!sManualFlush) {
+			if (!sTimer) sTimer = [NSTimer timerWithTimeInterval:1.0/20.0 target:self selector:@selector(checkPipes:) userInfo:nil repeats:YES];
+			[[NSRunLoop mainRunLoop] addTimer:sTimer forMode:NSRunLoopCommonModes];
+		}
 	}
 	
 	if (!ce&&sCapturing) {
@@ -120,7 +126,7 @@ static NSTimer* sTimer;
 	sForwardsRegularInput = f;
 }
 
-
++ (void)flush {[O3PipeControl checkPipes:nil];}
 + (void)checkPipes:(id)notification {
 	int s; char buffer[512];
 	

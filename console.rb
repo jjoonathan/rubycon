@@ -18,14 +18,14 @@ def with(x)
 	end if not defined? with
 
 def scrollableView(content)
-	scrollview = OSX::NSScrollView.alloc.initWithFrame(content.frame)
-	clipview = OSX::NSClipView.alloc.initWithFrame(scrollview.frame)
+	scrollview = NSScrollView.alloc.initWithFrame(content.frame)
+	clipview = NSClipView.alloc.initWithFrame(scrollview.frame)
 	scrollview.contentView = clipview
 	scrollview.documentView = clipview.documentView = content
 	content.frame = clipview.frame
 	scrollview.hasVerticalScroller = scrollview.hasHorizontalScroller = 
     scrollview.autohidesScrollers = true
-	resizingMask = OSX::NSViewWidthSizable + OSX::NSViewHeightSizable
+	resizingMask = NSViewWidthSizable + NSViewHeightSizable
 	content.autoresizingMask = clipview.autoresizingMask = 
     scrollview.autoresizingMask = resizingMask
 	scrollview
@@ -37,22 +37,20 @@ module RubyConsoleContext
 			fs_val = FScript[id.to_s]
 			return fs_val if fs_val
 			end
-		Object.method_missing(id,*params)
+		Object.send(id,*params)
 		end
-	include OSX
 end
 
-class RubyConsole < OSX::NSObject
+class RubyConsole < NSObject
 	attr_accessor :textview, :inputMethod, :binding_context, :history, :histidx, :preprompt_place, :hist_saved_line
 	
 	def self.rc_scripts()
 		return @rc_script_paths if @rc_script_paths
 		global_rc_path = 
 		@rc_script_paths = {
-			"Global" => OSX::NSBundle.bundleForClass(OSX::RubyConLoader).pathForResource_ofType_('rubyconrc','rb'),
+			"Global" => NSBundle.bundleForClass(RubyConLoader).pathForResource('rubyconrc', :ofType=>'rb'),
 			"User"   => File.expand_path('~/Library/Rubycon/rubyconrc.rb'),
-			"Application" => File.expand_path("~/Library/Rubycon/#{OSX::NSBundle.mainBundle.bundleIdentifier}.rb")
-			#"Application" => OSX::NSBundle.mainBundle.pathForResource_ofType_('rubyconrc','rb')
+			"Application" => File.expand_path("~/Library/Rubycon/#{NSBundle.mainBundle.bundleIdentifier}.rb")
 		}
 		end
 	
@@ -71,12 +69,11 @@ class RubyConsole < OSX::NSObject
 		@textview.delegate = self
 		@textview.richText = false
 		@textview.continuousSpellCheckingEnabled = false
-		@textview.font = @font = OSX::NSFont.fontWithName_size('Monaco', 12.0)
+		@textview.font = @font = NSFont.fontWithName('Monaco', :size=>12.0)
 		@binding_context = RubyConsole.new_binding_context
 		@startOfInput = 0
 		@tv_mutex = Monitor.new
 		@histidx = 0
-		@history = []
 		draw_prompt()
 		self
 		end
@@ -99,17 +96,18 @@ class RubyConsole < OSX::NSObject
 		$rubycon_console_stack ||= []
 		$rubycon_top_console = nil
 		textview.window.close unless already_closing
-		textview.window.release
 		end
 	
 	def attString(string,type)
-		attribs = { OSX::NSFontAttributeName => @font, OSX::NSForegroundColorAttributeName => OSX::NSColor.whiteColor }
+		attribs = { NSFontAttributeName => @font, NSForegroundColorAttributeName => NSColor.whiteColor }
 		case type
-			when :stderr: attribs[OSX::NSForegroundColorAttributeName] = OSX::NSColor.redColor
-			when :stdin || :retval: attribs[OSX::NSUnderlineStyleAttributeName] = OSX::NSUnderlineStyleSingle
-			when :stdout: #Default
+			when (:stderr)
+				attribs[NSForegroundColorAttributeName] = NSColor.redColor
+			when (:stdin || :retval)
+				attribs[NSUnderlineStyleAttributeName] = NSUnderlineStyleSingle
+			when (:stdout) #Default			
 		end
-		OSX::NSAttributedString.alloc.initWithString_attributes(string, attribs)
+		NSAttributedString.alloc.initWithString(string, :attributes=>attribs)
 		end
 	
 	def write(object,type=:stdin)
@@ -121,7 +119,7 @@ class RubyConsole < OSX::NSObject
 				@preprompt_place += string.length
 				@startOfInput += string.length
 				end
-			@textview.textStorage.insertAttributedString_atIndex_(attString(string,type),idx)
+			@textview.textStorage.insertAttributedString(attString(string,type), :atIndex=>idx)
 			@textview.scrollRangeToVisible([lengthOfTextView, 0])
 			if type==:stdin then
 				local_hash={}
@@ -133,7 +131,7 @@ class RubyConsole < OSX::NSObject
 		end
 	
 	def moveAndScrollToIndex(index)
-		range = OSX::NSRange.new(index, 0)
+		range = NSRange.new(index, 0)
 		@textview.scrollRangeToVisible(range)
 		@textview.setSelectedRange(range)
 		end
@@ -148,13 +146,13 @@ class RubyConsole < OSX::NSObject
 	
 	def currentLine
 		text = @textview.textStorage.mutableString
-		text.substringWithRange(OSX::NSRange.new(@startOfInput, text.length - @startOfInput)).to_s
+		text.substringWithRange(NSRange.new(@startOfInput, text.length - @startOfInput)).to_s
 		end
 	
 	def replaceLineWithHistory(s)
-		range = OSX::NSRange.new(@startOfInput, lengthOfTextView - @startOfInput)
+		range = NSRange.new(@startOfInput, lengthOfTextView - @startOfInput)
 		@tv_mutex.synchronize {
-			@textview.textStorage.replaceCharactersInRange_withAttributedString(range, attString(s.chomp, :stdin))
+			@textview.textStorage.replaceCharactersInRange(range, :withAttributedString=>attString(s.chomp, :stdin))
 			@textview.scrollRangeToVisible([lengthOfTextView, 0])
 		}
 		true
@@ -179,11 +177,11 @@ class RubyConsole < OSX::NSObject
 		draw_prompt()
 		end
 	
-	def textView_shouldChangeTextInRange_replacementString(textview, range, replacement)
+	def textView(textview, shouldChangeTextInRange:range, replacementString:replacement)
 		@tv_mutex.synchronize {
 			if range.location < @startOfInput
 				moveAndScrollToIndex(@startOfInput)
-				@textview.textStorage.replaceCharactersInRange_withAttributedString_(OSX::NSRange.new(@startOfInput,0),attString(replacement,:stdin))
+				@textview.textStorage.replaceCharactersInRange(NSRange.new(@startOfInput,0), withAttributedString:attString(replacement,:stdin))
 				return false
 				end
 			replacement = replacement.to_s.gsub("\r","\n")
@@ -191,11 +189,11 @@ class RubyConsole < OSX::NSObject
 			if replacement.length > 0 and replacement[-1].chr == "\n"
 				return true if replacement.length!=1 && range.location!=lengthOfTextView #Allow newline pasting
 				inline_newline = replacement.length==1 && range.location!=lengthOfTextView
-				@textview.textStorage.replaceCharactersInRange_withAttributedString_(range, attString(replacement,:stdin)) unless inline_newline
+				@textview.textStorage.replaceCharactersInRange(range, :withAttributedString=>attString(replacement,:stdin)) unless inline_newline
 				if inline_newline
-					end_of_tv = OSX::NSRange.new(lengthOfTextView,0)
+					end_of_tv = NSRange.new(lengthOfTextView,0)
 					@textview.setSelectedRange(end_of_tv)
-					@textview.textStorage.replaceCharactersInRange_withAttributedString_(end_of_tv,attString("\n",:stdin))
+					@textview.textStorage.replaceCharactersInRange(end_of_tv, :withAttributedString=>attString("\n",:stdin))
 					end
 				cl=currentLine
 				@startOfInput = lengthOfTextView
@@ -204,7 +202,7 @@ class RubyConsole < OSX::NSObject
 				end
 			if range.location>=@startOfInput
 				moveAndScrollToIndex(@startOfInput)
-				@textview.textStorage.replaceCharactersInRange_withAttributedString_(OSX::NSRange.new(range.location,range.length),attString(replacement,:stdin))
+				@textview.textStorage.replaceCharactersInRange(NSRange.new(range.location,range.length), :withAttributedString=>attString(replacement,:stdin))
 				moveAndScrollToIndex(range.location+replacement.length)
 				return false
 				end
@@ -212,26 +210,33 @@ class RubyConsole < OSX::NSObject
 		true
 		end
 	
-	def textView_willChangeSelectionFromCharacterRange_toCharacterRange(textview, oldRange, newRange)
+	def textView(textview, willChangeSelectionFromCharacterRange:oldRange, toCharacterRange:newRange)
 		if (newRange.length == 0) and (newRange.location < @startOfInput)
 			return oldRange if (oldRange.location>=@startOfInput)
 			rng = 0
 			@tv_mutex.synchronize {
-				rng = OSX::NSMakeRange(@textview.textStorage.length, 0)
+				rng = NSMakeRange(@textview.textStorage.length, 0)
 			}
 			rng
 			end
 		newRange
 		end
 	
-	def textView_doCommandBySelector(textview, selector)
+	def textView(textview, doCommandBySelector:selector)
+		STDERR.puts "!"
 		case selector
 			when "moveUp:"
 				@hist_saved_line=currentLine if @histidx==0
+				num=@history.size
+				STDERR.puts "1 #{@history} #{num.intValue}"
+				STDERR.puts num.to_i
 				if @histidx<@history.size
+				STDERR.puts "rlwd0"
 					@histidx+=1
+				STDERR.puts "rlwd"
 					replaceLineWithHistory(@history[-@histidx])
 					end
+				STDERR.puts 'fin'
 			when "moveDown:"
 				if @histidx==1
 					@histidx=0
@@ -256,16 +261,15 @@ class RubyConsole < OSX::NSObject
 	end
 
 #More a menu responder than a window factory now
-class ConsoleWindowFactory < OSX::NSObject
+class ConsoleWindowFactory < NSObject
 	def spawn(sender)
 		frame = [50,50,1200,600]
-		styleMask = OSX::NSTitledWindowMask + OSX::NSClosableWindowMask + OSX::NSMiniaturizableWindowMask + OSX::NSResizableWindowMask
-		window = OSX::NSWindow.alloc.initWithContentRect_styleMask_backing_defer(frame, styleMask, OSX::NSBackingStoreBuffered, false)
-		window.retain
+		styleMask = NSTitledWindowMask + NSClosableWindowMask + NSMiniaturizableWindowMask + NSResizableWindowMask
+		window = NSWindow.alloc.initWithContentRect(frame, :styleMask=>styleMask, :backing=>NSBackingStoreBuffered, :defer=>false)
 		window.opaque=false
-		window.backgroundColor=OSX::NSColor.clearColor
-		textview = OSX::NSTextView.alloc.initWithFrame(frame)
-		textview.backgroundColor=OSX::NSColor.colorWithCalibratedRed_green_blue_alpha_(0, 0, 0, 0.8)
+		window.backgroundColor=NSColor.clearColor
+		textview = NSTextView.alloc.initWithFrame(frame)
+		textview.backgroundColor=NSColor.colorWithCalibratedRed(0, :green=>0, :blue=>0, :alpha=>0.8)
 		console = RubyConsole.alloc.initWithTextView textview
 		with window do |w|
 			w.contentView = scrollableView(textview)
@@ -278,8 +282,8 @@ class ConsoleWindowFactory < OSX::NSObject
 	
 	def defaultsView(sender)
 		if !@user_defualts_editor
-			@user_defualts_editor= OSX::RubyConDefaultsController.alloc.init
-			OSX::NSBundle.loadNibNamed_owner_("DefaultsEditor", @user_defualts_editor)
+			@user_defualts_editor= RubyConDefaultsController.alloc.init
+			NSBundle.loadNibNamed("DefaultsEditor", :owner=>@user_defualts_editor)
 			end
 		@user_defualts_editor.show
 		end
@@ -288,89 +292,89 @@ class ConsoleWindowFactory < OSX::NSObject
 		path=sender.representedObject.to_s
 		if !File.exists?(path)
 			`mkdir -p #{File.dirname(path)}`
-			STDERR.puts "Insufficent privelages to mkdir -p to #{File.dirname(path)}" unless $?.success?
+			puts "Insufficent privelages to mkdir -p to #{File.dirname(path)}" unless $?.success?
 			`touch #{path}`
-			STDERR.puts "Insufficent privelages to touch #{path}" unless $?.success?
+			puts "Insufficent privelages to touch #{path}" unless $?.success?
 			end
-		OSX::NSWorkspace.sharedWorkspace().openFile(path)
+		NSWorkspace.sharedWorkspace().openFile(path)
 		end
 	end
 
 #Add the ruby menu
-top_menu= OSX::NSMenu.alloc.initWithTitle ''
+top_menu= NSMenu.alloc.initWithTitle ''
 
 begin
-  top_menu_item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_('', :jump, '')
-  icon_path = OSX::NSBundle.bundleForClass(OSX::RubyConLoader).pathForResource_ofType_('rubycon_icon','icns')
-  ruby_icon = OSX::NSImage.alloc.initWithContentsOfFile(icon_path)
+  top_menu_item= NSMenuItem.alloc.initWithTitle('', :action=>:jump, :keyEquivalent=>'')
+  icon_path = NSBundle.bundleForClass(RubyConLoader).pathForResource('rubycon_icon', :ofType=>'icns')
+  ruby_icon = NSImage.alloc.initWithContentsOfFile(icon_path)
   ruby_icon.size= [16,16]
   top_menu_item.image= ruby_icon
   top_menu_item.submenu= top_menu
-  top_menu_item.target= OSX::RubyConLoader
+  top_menu_item.target= RubyConLoader
   top_menu_item.action= 'doNothing:'
   top_menu_item.enabled= true
-  main_menu = OSX::NSApplication.sharedApplication.mainMenu
+  main_menu = NSApplication.sharedApplication.mainMenu
   main_menu.addItem top_menu_item
-  top_menu_item.retain
 rescue Exception
-  $RubyConOldStdout.puts "Could not create rubycon menu: #{$!}. \n#{$!.backtrace.join('\n')}"
+  puts "Could not create rubycon menu: #{$!}. \n#{$!.backtrace.join('\n')}"
 end
 
 begin
-  spawn_item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_('New Ruby Console', 'spawn:', 'R')
-  spawn_item.keyEquivalentModifierMask= OSX::NSCommandKeyMask+OSX::NSAlternateKeyMask
+  spawn_item= NSMenuItem.alloc.initWithTitle('New Ruby Console', :action=>'spawn:', :keyEquivalent=>'R')
+  spawn_item.keyEquivalentModifierMask= NSCommandKeyMask+NSAlternateKeyMask
   cfac = ConsoleWindowFactory.new
   spawn_item.target= cfac
   top_menu.addItem spawn_item
   $rubycon_console_window_fac = cfac
   
-  name_view_item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_('Name Views', 'nameView:', 'V')
-  name_view_item.keyEquivalentModifierMask= OSX::NSCommandKeyMask+OSX::NSAlternateKeyMask
+  name_view_item= NSMenuItem.alloc.initWithTitle('Name Views', :action=>'nameView:', :keyEquivalent=>'V')
+  name_view_item.keyEquivalentModifierMask= NSCommandKeyMask+NSAlternateKeyMask
   name_view_item.target= cfac
   top_menu.addItem name_view_item
   
-  user_defaults_item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_('User Defaults', 'defaultsView:', '')
+  user_defaults_item= NSMenuItem.alloc.initWithTitle('User Defaults', :action=>'defaultsView:', :keyEquivalent=>'')
   user_defaults_item.target= cfac
   top_menu.addItem user_defaults_item
   
-  top_menu.addItem OSX::NSMenuItem.separatorItem()
+  top_menu.addItem NSMenuItem.separatorItem()
 
   RubyConsole.rc_scripts.each {|name,path|
-  	item= OSX::NSMenuItem.alloc.initWithTitle_action_keyEquivalent_("Edit #{name} RC Script", 'editrc:', '')
+  	item= NSMenuItem.alloc.initWithTitle("Edit #{name} RC Script", :action=>'editrc:', :keyEquivalent=>'')
   	item.representedObject=(path)
   	item.target=(cfac)
   	top_menu.addItem item
   }
 rescue Exception
-  $RubyConOldStdout.puts "Could not populate rubycon menu: #{$!}. \n#{$!.backtrace.join('\n')}"
+  puts "Could not populate rubycon menu: #{$!}. \n#{$!.backtrace.join('\n')}"
 end
 
 begin
   framework_search_paths = ["/System/Library/Frameworks/", "/Library/Frameworks/", "~/Library/Frameworks/"]
   bn = nil
   framework_search_paths.each {|s|
-  	bn = OSX::NSBundle.bundleWithPath(s+"FScript.framework") unless bn
+  	bn = NSBundle.bundleWithPath(s+"FScript.framework") unless bn
   }
   if bn && bn.load
-  	fs_menu_item = OSX::FScriptMenuItem.alloc.init
+  	fs_menu_item = FScriptMenuItem.alloc.init
   	cfac.patch_fscript(fs_menu_item.submenu)
   	fs_menu_item.title= 'a'
   	fs_menu_item.submenu.title= 'b'
-  	fs_icon_path = OSX::NSBundle.bundleForClass(OSX::RubyConLoader).pathForResource_ofType_('fscript_menu_icon','icns')
-  	fs_icon = OSX::NSImage.alloc.initWithContentsOfFile(fs_icon_path)
+  	fs_icon_path = NSBundle.bundleForClass(RubyConLoader).pathForResource('fscript_menu_icon', :ofType=>'icns')
+  	fs_icon = NSImage.alloc.initWithContentsOfFile(fs_icon_path)
   	fs_icon.size= [16,16]
   	fs_menu_item.image= fs_icon
   	main_menu.addItem fs_menu_item
   	$FScript_menu = fs_menu_item
   	end
 rescue Exception
-  $RubyConOldStdout.puts "Could not create fscript menu: #{$!}. \n#{$!.backtrace.join('\n')}"
+  puts "Could not create fscript menu: #{$!}. \n#{$!.backtrace.join('\n')}"
 end
 
 class RubyConTopBouncer
 	def processStderrData(dat)
 		if $rubycon_top_console then
 			$rubycon_top_console.write(dat.rubyString, :stderr)
+			dat.rubyString
 			else
 			dat.rubyString
 			end
@@ -378,6 +382,7 @@ class RubyConTopBouncer
 	def processStdoutData(dat)
 		if $rubycon_top_console then
 			$rubycon_top_console.write(dat.rubyString, :stdout)
+			dat.rubyString
 			else
 			dat.rubyString
 			end
@@ -385,17 +390,26 @@ class RubyConTopBouncer
 end
 
 begin
-  $:<<OSX::NSBundle.mainBundle.resourcePath
-  $program_name = OSX::NSBundle.mainBundle.executablePath.to_s
+  $:<<NSBundle.mainBundle.resourcePath
+  $program_name = NSBundle.mainBundle.executablePath.to_s
   alias $0 $program_name
 rescue
-  $RubyConOldStdout.puts "Could not capture $0 and STDOUT, STDERR variables: #{$!}. \n#{$!.backtrace.join('\n')}"
+  puts "Could not capture $0 and STDOUT, STDERR variables: #{$!}. \n#{$!.backtrace.join('\n')}"
 end
 
 begin
 	$rubycon_top_bouncer = RubyConTopBouncer.new
-	OSX::O3PipeControl.delegate= $rubycon_top_bouncer
-	OSX::O3PipeControl.capturingEnabled= true
+	O3PipeControl.delegate= $rubycon_top_bouncer
+	O3PipeControl.manualFlush= false
+	O3PipeControl.capturingEnabled= true
 rescue
-  $RubyConOldStdout.puts "Could not capture stdout and stderr FDs: #{$!}"
+  puts "Could not capture stdout and stderr FDs: #{$!}"
 end
+
+class RubyConPipeFlusher
+	def flush
+		O3PipeControl.flush
+		end
+	end
+
+NSTimer.scheduledTimerWithTimeInterval(0.05, :target=>RubyConPipeFlusher.new, :selector=>:flush, :userInfo=>nil, :repeats=>true)

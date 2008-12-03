@@ -27,7 +27,11 @@
 	//But otherwise go ahead
 	RBBundleInit(entry_file, self, nil);
 #else
-	macruby_main(entry_file, 0, nil);
+	int default_path_depth = [[[[NSBundle mainBundle] resourcePath] pathComponents] count];
+	char* undopath = strdup("../../../../../../../../../../../../../../../../../../../../");
+	undopath[3*default_path_depth] = 0;
+	const char* path = [[NSString stringWithFormat:@"%s%s",undopath,entry_file] UTF8String];
+	macruby_main(path, 0, nil);
 #endif
 }
 

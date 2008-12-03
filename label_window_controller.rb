@@ -3,8 +3,8 @@ require 'view_description'
 
 class LabelWindowController < InfoWindowController
 	TextSize = 10
-	TextFont = OSX::NSFont.boldSystemFontOfSize(TextSize)
-	TextColor = OSX::NSColor.orangeColor
+	TextFont = NSFont.boldSystemFontOfSize(TextSize)
+	TextColor = NSColor.orangeColor
 		
 	def initialize(view,number)
 		super()
@@ -12,7 +12,7 @@ class LabelWindowController < InfoWindowController
 		@info_view.font= TextFont
 		@info_view.textColor= TextColor
 		@info_view.textContainerInset= [0,0]
-		@info_window.backgroundColor= OSX::NSColor.colorWithCalibratedWhite_alpha_(0,0.6)
+		@info_window.backgroundColor= NSColor.colorWithCalibratedWhite_alpha_(0,0.6)
 		self.number= number
 		self.view= view
 	end

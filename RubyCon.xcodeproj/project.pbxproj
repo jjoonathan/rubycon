@@ -13,7 +13,6 @@
 		FC06C1680E6E4E06009B604D /* RubyConDefaultsKey.m in Sources */ = {isa = PBXBuildFile; fileRef = FC06C1670E6E4E06009B604D /* RubyConDefaultsKey.m */; };
 		FC0A37CD0E23229B004BBFA5 /* console.rb in Resources */ = {isa = PBXBuildFile; fileRef = FC0A37CC0E23229B004BBFA5 /* console.rb */; };
 		FC0C940A0E988B1B00D115D3 /* rubycon.rb in Resources */ = {isa = PBXBuildFile; fileRef = FC0C94090E988B1B00D115D3 /* rubycon.rb */; };
-		FC339D9A0E74EF7600111FF7 /* RubyCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC2C33380E62538C00E1F5E7 /* RubyCocoa.framework */; };
 		FC6634B90E4BC33C0092C2EF /* RubyConUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FC6634B80E4BC33C0092C2EF /* RubyConUtilities.m */; };
 		FC6635050E4BCBFE0092C2EF /* rubyconrc.rb in Resources */ = {isa = PBXBuildFile; fileRef = FC6635040E4BCBFE0092C2EF /* rubyconrc.rb */; };
 		FC6636770E4CC21C0092C2EF /* NSWindow+WindowList.m in Sources */ = {isa = PBXBuildFile; fileRef = FC6636760E4CC21C0092C2EF /* NSWindow+WindowList.m */; };
@@ -105,7 +104,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FC339D9A0E74EF7600111FF7 /* RubyCocoa.framework in Frameworks */,
 				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
 				FCA392CE0ED0888C004FC4B7 /* MacRuby.framework in Frameworks */,
 			);
@@ -379,6 +377,7 @@
 		1DEB913F08733D840010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_ENABLE_OBJC_GC = required;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
