@@ -19,19 +19,16 @@
 }
 
 + (void)load {
-	const char* entry_file = [[[NSBundle bundleForClass:self] pathForResource:@"rubycon" ofType:@"rb"] UTF8String];
+	NSString* rubyconStartPath = [[NSBundle bundleForClass:self] pathForResource:@"rubycon" ofType:@"rb"];
 #ifndef USE_MACRUBY
+	const char* entry_file = [rubyconStartPath UTF8String];
 	//Don't load rubycocoa into rubycocoa apps. Two rubies load, and its a big mess.
 	if (!system([[NSString stringWithFormat:@"nm \"%@\" | grep RBApplicationMain", [[NSBundle mainBundle] executablePath]] UTF8String])) return;
 		
 	//But otherwise go ahead
 	RBBundleInit(entry_file, self, nil);
 #else
-	int default_path_depth = [[[[NSBundle mainBundle] resourcePath] pathComponents] count];
-	char* undopath = strdup("../../../../../../../../../../../../../../../../../../../../");
-	undopath[3*default_path_depth] = 0;
-	const char* path = [[NSString stringWithFormat:@"%s%s",undopath,entry_file] UTF8String];
-	macruby_main(path, 0, nil);
+	[[MacRuby sharedRuntime] evaluateFileAtPath:rubyconStartPath];
 #endif
 }
 
