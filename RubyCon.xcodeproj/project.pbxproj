@@ -31,6 +31,8 @@
 		FCED45AB0E317F7900354E55 /* rubycon_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = FCED45AA0E317F7900354E55 /* rubycon_icon.icns */; };
 		FCED75A40F0711AA00A71396 /* RubyCon_main.m in Sources */ = {isa = PBXBuildFile; fileRef = FCED75A30F0711AA00A71396 /* RubyCon_main.m */; };
 		FCED75A60F07120400A71396 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FCED75A50F07120400A71396 /* MainMenu.xib */; };
+		FCED75BF0F08030B00A71396 /* ruby.icns in Resources */ = {isa = PBXBuildFile; fileRef = FCED75BE0F08030B00A71396 /* ruby.icns */; };
+		FCED75C30F08039E00A71396 /* RCProcessSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = FCED75C20F08039E00A71396 /* RCProcessSelector.m */; };
 		FCFFFB060E6C9D44005F841F /* RubyConDefaultsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFFFB040E6C9D44005F841F /* RubyConDefaultsController.m */; };
 		FCFFFB730E6CCCD4005F841F /* DefaultsEditor.nib in Resources */ = {isa = PBXBuildFile; fileRef = FCFFFB720E6CCCD4005F841F /* DefaultsEditor.nib */; };
 /* End PBXBuildFile section */
@@ -97,9 +99,12 @@
 		FCE031DE0E229734008392E6 /* Info */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info; sourceTree = "<group>"; };
 		FCED45AA0E317F7900354E55 /* rubycon_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = rubycon_icon.icns; sourceTree = "<group>"; };
 		FCED75940F070EE400A71396 /* RubyCon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RubyCon.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		FCED75960F070EE400A71396 /* RubiCon-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RubiCon-Info.plist"; sourceTree = "<group>"; };
+		FCED75960F070EE400A71396 /* RubyCon-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RubyCon-Info.plist"; sourceTree = "<group>"; };
 		FCED75A30F0711AA00A71396 /* RubyCon_main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RubyCon_main.m; sourceTree = "<group>"; };
 		FCED75A50F07120400A71396 /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
+		FCED75BE0F08030B00A71396 /* ruby.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ruby.icns; sourceTree = "<group>"; };
+		FCED75C10F08039E00A71396 /* RCProcessSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCProcessSelector.h; sourceTree = "<group>"; };
+		FCED75C20F08039E00A71396 /* RCProcessSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCProcessSelector.m; sourceTree = "<group>"; };
 		FCFFFB040E6C9D44005F841F /* RubyConDefaultsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RubyConDefaultsController.m; sourceTree = "<group>"; };
 		FCFFFB050E6C9D44005F841F /* RubyConDefaultsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyConDefaultsController.h; sourceTree = "<group>"; };
 		FCFFFB720E6CCCD4005F841F /* DefaultsEditor.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = DefaultsEditor.nib; sourceTree = "<group>"; };
@@ -234,7 +239,10 @@
 			children = (
 				FCED75A30F0711AA00A71396 /* RubyCon_main.m */,
 				FCED75A50F07120400A71396 /* MainMenu.xib */,
-				FCED75960F070EE400A71396 /* RubiCon-Info.plist */,
+				FCED75960F070EE400A71396 /* RubyCon-Info.plist */,
+				FCED75BE0F08030B00A71396 /* ruby.icns */,
+				FCED75C10F08039E00A71396 /* RCProcessSelector.h */,
+				FCED75C20F08039E00A71396 /* RCProcessSelector.m */,
 			);
 			name = "RubyCon Application";
 			sourceTree = "<group>";
@@ -324,6 +332,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FCED75A60F07120400A71396 /* MainMenu.xib in Resources */,
+				FCED75BF0F08030B00A71396 /* ruby.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,6 +376,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FCED75A40F0711AA00A71396 /* RubyCon_main.m in Sources */,
+				FCED75C30F08039E00A71396 /* RCProcessSelector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -478,7 +488,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INFOPLIST_FILE = "RubiCon-Info.plist";
+				INFOPLIST_FILE = "RubyCon-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -501,7 +511,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INFOPLIST_FILE = "RubiCon-Info.plist";
+				INFOPLIST_FILE = "RubyCon-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
 					"-framework",
